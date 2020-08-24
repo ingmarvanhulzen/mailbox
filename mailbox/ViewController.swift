@@ -47,13 +47,17 @@ class ViewController: UIViewController {
         tableView.register(ViewControllerCell.self, forCellReuseIdentifier: "ViewControllerCell")
         
         view.addSubview(tableView)
+    }
+    
+    override func updateViewConstraints() {
+        super.updateViewConstraints()
         
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor),
-            tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
-            tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-        ])
+           tableView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor),
+           tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
+           tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
+           tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+       ])
     }
 }
 
