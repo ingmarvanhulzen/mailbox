@@ -18,10 +18,29 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" id="0sz-ww-rRW"/>
+                    <connections>
+                        <segue destination="xWI-2w-C2c" kind="show" identifier="ShowListViewController" id="Umh-gv-Duh"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1042.0289855072465" y="137.94642857142856"/>
+            <point key="canvasLocation" x="1041" y="138"/>
+        </scene>
+        <!--List View Controller-->
+        <scene sceneID="Lc7-Ff-gm7">
+            <objects>
+                <viewController id="xWI-2w-C2c" customClass="ListViewController" customModule="mailbox" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="nI6-FR-JAE">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="msq-nH-Ueu"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="JgM-Th-KMM"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="wYw-im-xgP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1909" y="138"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="he2-rF-f1r">

@@ -33,7 +33,6 @@ class ViewController: UIViewController {
     
     private let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped)
-        tableView.allowsSelection = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.tableHeaderView = UIView(frame: .zero)
         tableView.tableFooterView = UIView(frame: .zero)
@@ -69,6 +68,15 @@ class ViewController: UIViewController {
         
         super.updateViewConstraints()
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let destination = segue.destination as? ListViewController {
+            if let indexPath = tableView.indexPathForSelectedRow {
+                destination.title = mailboxes[indexPath.row].title
+                tableView.deselectRow(at: indexPath, animated: false)
+            }
+        }
+    }
 }
 
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
@@ -87,6 +95,10 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         }
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "ShowListViewController", sender: self)
     }
 }
 
