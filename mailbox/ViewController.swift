@@ -8,10 +8,18 @@
 
 import UIKit
 
+struct ViewControllerCellData {
+    let title: String!
+    let image: UIImage!
+    let count: Int!
+}
+
 class ViewControllerCell: UITableViewCell {
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.accessoryType = .disclosureIndicator
+        super.init(style: .value1, reuseIdentifier: reuseIdentifier);
+
+        accessoryType = .disclosureIndicator
     }
     
     required init?(coder: NSCoder) {
@@ -20,55 +28,64 @@ class ViewControllerCell: UITableViewCell {
 }
 
 class ViewController: UIViewController {
+    
+    private let reuseIdentifier = "ViewControllerCell"
+    
     private let tableView: UITableView = {
-        let view = UITableView(frame: .zero, style: .grouped)
-        view.allowsSelection = false
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.tableHeaderView = UIView(frame: .zero)
-        view.tableFooterView = UIView(frame: .zero)
-        view.backgroundColor = .clear
-        return view
+        let tableView = UITableView(frame: .zero, style: .grouped)
+        tableView.allowsSelection = false
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.tableHeaderView = UIView(frame: .zero)
+        tableView.tableFooterView = UIView(frame: .zero)
+        return tableView
     }()
     
-    private let mailboxes = [
-        "All Inboxes",
-        "Outlook",
-        "G-mail",
+    private let mailboxes: [ViewControllerCellData] = [
+        .init(title: "All Inboxes", image: UIImage(systemName: "tray.2"), count: 24),
+        .init(title: "Outlook", image: UIImage(systemName: "tray"), count: 12),
+        .init(title: "G mail", image: UIImage(systemName: "tray"), count: 0),
     ]
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+
         title = "Mailboxes"
-        view.backgroundColor = .secondarySystemBackground
+        view.backgroundColor = .systemGroupedBackground
         
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(ViewControllerCell.self, forCellReuseIdentifier: "ViewControllerCell")
+        tableView.register(ViewControllerCell.self, forCellReuseIdentifier: reuseIdentifier)
         
         view.addSubview(tableView)
     }
     
     override func updateViewConstraints() {
-        super.updateViewConstraints()
-        
         NSLayoutConstraint.activate([
            tableView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor),
            tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
            tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-       ])
+        ])
+        
+        super.updateViewConstraints()
     }
 }
 
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return mailboxes.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ViewControllerCell", for: indexPath)
-        cell.textLabel?.text = mailboxes[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! ViewControllerCell
+        
+        if let data = mailboxes[indexPath.row] as ViewControllerCellData? {
+            cell.textLabel?.text = data.title
+            cell.imageView?.image = data.image
+            cell.detailTextLabel?.text = data.count ?? 0 > 0 ? String(data.count) : ""
+        }
+        
         return cell
     }
 }
