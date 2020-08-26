@@ -8,11 +8,6 @@
 
 import UIKit
 
-struct ViewControllerCellData {
-    let title: String!
-    let image: UIImage!
-    let count: Int!
-}
 
 class ViewControllerCell: UITableViewCell {
     
@@ -39,11 +34,7 @@ class ViewController: UIViewController {
         return tableView
     }()
     
-    private let mailboxes: [ViewControllerCellData] = [
-        .init(title: "All Inboxes", image: UIImage(systemName: "tray.2"), count: 24),
-        .init(title: "Outlook", image: UIImage(systemName: "tray"), count: 12),
-        .init(title: "G mail", image: UIImage(systemName: "tray"), count: 0),
-    ]
+    private let mailboxes: [Mailbox] = mockStore.mailboxes
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,6 +64,7 @@ class ViewController: UIViewController {
         if let destination = segue.destination as? ListViewController {
             if let indexPath = tableView.indexPathForSelectedRow {
                 destination.title = mailboxes[indexPath.row].title
+                destination.listItems = mailboxes[indexPath.row].mails
                 tableView.deselectRow(at: indexPath, animated: false)
             }
         }
@@ -88,10 +80,10 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! ViewControllerCell
         
-        if let data = mailboxes[indexPath.row] as ViewControllerCellData? {
+        if let data = mailboxes[indexPath.row] as Mailbox? {
             cell.textLabel?.text = data.title
             cell.imageView?.image = data.image
-            cell.detailTextLabel?.text = data.count ?? 0 > 0 ? String(data.count) : ""
+            cell.detailTextLabel?.text = data.meta > 0 ? String(data.meta) : ""
         }
         
         return cell

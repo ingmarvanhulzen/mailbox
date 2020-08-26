@@ -34,12 +34,23 @@ extension Date {
     }
 }
 
-struct ListViewControllerCellData {
-    let subject: String!
-    let subTitle: String!
-    let content: String!
-    let date: Date!
-    let read: Bool?
+class ListViewControllerCellIndicator: UIView {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        isOpaque = false
+        backgroundColor = .clear
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func draw(_ rect: CGRect) {
+        tintColor.setFill()
+        let indicator = UIBezierPath.init(arcCenter: CGPoint(x: self.frame.width / 2, y: self.frame.height / 2), radius: self.frame.width / 2, startAngle: 0, endAngle: 360, clockwise: true)
+        indicator.fill()
+    }
 }
 
 class ListViewControllerCell: UITableViewCell {
@@ -78,26 +89,37 @@ class ListViewControllerCell: UITableViewCell {
         return label
     }()
     
+    var indicator: ListViewControllerCellIndicator = {
+        let view = ListViewControllerCellIndicator()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
+        self.accessoryType = .disclosureIndicator
+        
+        contentView.addSubview(indicator)
         contentView.addSubview(subjectLabel)
         contentView.addSubview(subTitleLabel)
         contentView.addSubview(contentLabel)
         contentView.addSubview(dateLabel)
 
         let viewsDict = [
-          "subject": subjectLabel,
-          "subTitle": subTitleLabel,
-          "content": contentLabel,
-          "date": dateLabel
+            "indicator": indicator,
+            "subject": subjectLabel,
+            "subTitle": subTitleLabel,
+            "content": contentLabel,
+            "date": dateLabel
         ]
 
-        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-[subject]-[date]-|", options: [], metrics: nil, views: viewsDict))
-        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-[content]-|", options: [], metrics: nil, views: viewsDict))
-        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-[subTitle]-|", options: [], metrics: nil, views: viewsDict))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-8-[indicator(10)]-8-[subject]-[date]-|", options: [], metrics: nil, views: viewsDict))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-8-[indicator(10)]-8-[content]-|", options: [], metrics: nil, views: viewsDict))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-8-[indicator(10)]-8-[subTitle]-|", options: [], metrics: nil, views: viewsDict))
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[subject][subTitle][content]-|", options: [], metrics: nil, views: viewsDict))
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[date][subTitle][content]-|", options: [], metrics: nil, views: viewsDict))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[indicator][subTitle][content]-|", options: [], metrics: nil, views: viewsDict))
     }
     
     required init?(coder: NSCoder) {
@@ -106,31 +128,39 @@ class ListViewControllerCell: UITableViewCell {
 }
 
 class ListViewController: UIViewController {
+    var listItems: [Mail] = []
     
     private let reuseIdentifier = "ListViewControllerCell"
     
     private let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.estimatedRowHeight = 80
+        tableView.separatorInset.left = 26
         return tableView
     }()
-    
-    private let listItems: [ListViewControllerCellData] = [
-        .init(subject: "Adobe Sign", subTitle: "Drive business with digital signatures", content: "Drive business with digital signatures Get in touch to discover what Adobe Sign could do for youre buisness.", date: Date(), read: false),
-        .init(subject: "Medium Daily Digest", subTitle: "New in iOS 14: App tests and more", content: "Stories for Ivanhulzen. Property Wrappers in Swift. 10 Tips on Developing iOS 14 widgets and apps.", date: Date(), read: true),
-        .init(subject: "Google email verification", subTitle: "You received an account verification email", content: "If you received an account verification email in error, it's likely that another user accidentally entered your email while trying to recover their own email account.", date: Date(timeIntervalSinceNow: -1*24*60*60), read: true)
-    ]
-    
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(ListViewControllerCell.self, forCellReuseIdentifier: reuseIdentifier)
-        tableView.estimatedRowHeight = 80
         
         view.setNeedsUpdateConstraints()
         view.addSubview(tableView)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        navigationController?.navigationBar.layoutMargins.left = tableView.separatorInset.left
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        navigationController?.navigationBar.layoutMargins.left = 20
     }
     
     override func updateViewConstraints() {
@@ -154,11 +184,12 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! ListViewControllerCell
         
-        if let data = listItems[indexPath.row] as ListViewControllerCellData? {
-            cell.subjectLabel.text = data.subject
-            cell.subTitleLabel.text = data.subTitle
+        if let data = listItems[indexPath.row] as Mail? {
+            cell.subjectLabel.text = data.headline
+            cell.subTitleLabel.text = data.subHeadline
             cell.contentLabel.text = data.content
             cell.dateLabel.text = data.date.formatRelativeString()
+            cell.indicator.tintColor = data.read ? .clear : .systemBlue
         }
         
         return cell
