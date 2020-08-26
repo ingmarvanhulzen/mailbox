@@ -22,10 +22,10 @@ struct Mailbox: Identifiable, Decodable {
     var mails: [Mail] {
         get {
             if title != "All Inboxes" {
-                return mockStore.mails.filter({ $0.mailbox == id })
+                return MockStore.shared.mails.filter({ $0.mailbox == id })
             }
         
-            return mockStore.mails
+            return MockStore.shared.mails
         }
     }
     
@@ -82,6 +82,8 @@ func loadMail() -> [Mail] {
 }
 
 struct MockStore {
+    static let shared = MockStore()
+    
     let mailboxes: [Mailbox]
     let mails: [Mail]
     
@@ -90,5 +92,3 @@ struct MockStore {
         mailboxes = loadMailbox()
     }
 }
-
-let mockStore = MockStore()

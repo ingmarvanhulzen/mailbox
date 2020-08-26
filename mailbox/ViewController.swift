@@ -34,7 +34,7 @@ class ViewController: UIViewController {
         return tableView
     }()
     
-    private let mailboxes: [Mailbox] = mockStore.mailboxes
+    private let mailboxes: [Mailbox] = MockStore.shared.mailboxes
 
     override func viewDidLoad() {
         super.viewDidLoad()
