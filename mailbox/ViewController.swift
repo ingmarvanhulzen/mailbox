@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import CoreData
 
 class ViewControllerCell: UITableViewCell {
     
@@ -33,8 +33,10 @@ class ViewController: UIViewController {
         tableView.tableFooterView = UIView(frame: .zero)
         return tableView
     }()
+
+    private var mailboxes = [Mailbox]()
     
-    private let mailboxes: [Mailbox] = MockStore.shared.mailboxes
+    private var context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,6 +49,39 @@ class ViewController: UIViewController {
         tableView.register(ViewControllerCell.self, forCellReuseIdentifier: reuseIdentifier)
         
         view.addSubview(tableView)
+        
+        initializeStore(context: self.context)
+        
+        self.fetchMailboxes()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.fetchMailboxes()
+    }
+    
+    func fetchMailboxes() {
+        do {
+            let request = Mailbox.fetchRequest() as NSFetchRequest
+            let sortDescriptors = NSSortDescriptor(key: "date", ascending: true)
+            
+            request.sortDescriptors = [sortDescriptors]
+            
+            self.mailboxes = try context.fetch(request)
+            
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        } catch {}
+    }
+    
+    func fetchUnreadCountForMailbox(mailbox: Mailbox) -> Int {
+        do {
+            return try self.context.fetch(Mail.fetchForMailboxUnread(mailbox: mailbox)).count
+        } catch {
+            return 0
+        }
     }
     
     override func updateViewConstraints() {
@@ -64,7 +99,7 @@ class ViewController: UIViewController {
         if let destination = segue.destination as? ListViewController {
             if let indexPath = tableView.indexPathForSelectedRow {
                 destination.title = mailboxes[indexPath.row].title
-                destination.listItems = mailboxes[indexPath.row].mails
+                destination.mailbox = mailboxes[indexPath.row]
                 tableView.deselectRow(at: indexPath, animated: false)
             }
         }
@@ -80,11 +115,12 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! ViewControllerCell
         
-        if let data = mailboxes[indexPath.row] as Mailbox? {
-            cell.textLabel?.text = data.title
-            cell.imageView?.image = data.image
-            cell.detailTextLabel?.text = data.meta > 0 ? String(data.meta) : ""
-        }
+        let mailbox = mailboxes[indexPath.row]
+        let count = self.fetchUnreadCountForMailbox(mailbox: mailbox)
+        
+        cell.textLabel?.text = mailbox.title
+        cell.imageView?.image = mailbox.image
+        cell.detailTextLabel?.text = count > 0 ? String(count) : ""
         
         return cell
     }

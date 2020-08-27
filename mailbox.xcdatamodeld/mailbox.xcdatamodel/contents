@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19G73" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Mail" representedClassName="Mail" syncable="YES" codeGenerationType="category">
+        <attribute name="content" optional="YES" attributeType="String"/>
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="headline" optional="YES" attributeType="String"/>
+        <attribute name="read" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="subHeadline" optional="YES" attributeType="String"/>
+        <relationship name="mailbox" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Mailbox" inverseName="mails" inverseEntity="Mailbox"/>
+    </entity>
+    <entity name="Mailbox" representedClassName="Mailbox" syncable="YES" codeGenerationType="category">
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <relationship name="mails" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Mail" inverseName="mailbox" inverseEntity="Mail"/>
+    </entity>
+    <elements>
+        <element name="Mail" positionX="-54" positionY="0" width="128" height="133"/>
+        <element name="Mailbox" positionX="-307.35546875" positionY="-123.203125" width="128" height="88"/>
+    </elements>
+</model>

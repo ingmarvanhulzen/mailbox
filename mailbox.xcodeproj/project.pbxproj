@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DB3237A924F7E496001C69E6 /* mailbox.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DB3237A724F7E496001C69E6 /* mailbox.xcdatamodeld */; };
+		DB3237D724F7FF25001C69E6 /* Mail+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3237D524F7FF25001C69E6 /* Mail+CoreDataClass.swift */; };
 		DB68B8B224F52C120039FF9C /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB68B8B124F52C120039FF9C /* ListViewController.swift */; };
 		DB68B8B424F55A100039FF9C /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB68B8B324F55A100039FF9C /* Store.swift */; };
 		DB68B8B824F55BA90039FF9C /* mock_mailboxs.json in Resources */ = {isa = PBXBuildFile; fileRef = DB68B8B724F55BA90039FF9C /* mock_mailboxs.json */; };
@@ -17,9 +19,12 @@
 		DBA69A9924F3E4BD00511735 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DBA69A9724F3E4BD00511735 /* Main.storyboard */; };
 		DBA69A9B24F3E4BE00511735 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DBA69A9A24F3E4BE00511735 /* Assets.xcassets */; };
 		DBA69A9E24F3E4BE00511735 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DBA69A9C24F3E4BE00511735 /* LaunchScreen.storyboard */; };
+		DBDE292524F847E000B97629 /* Mailbox+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBDE292324F847E000B97629 /* Mailbox+CoreDataClass.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		DB3237A824F7E496001C69E6 /* mailbox.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = mailbox.xcdatamodel; sourceTree = "<group>"; };
+		DB3237D524F7FF25001C69E6 /* Mail+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Mail+CoreDataClass.swift"; sourceTree = "<group>"; };
 		DB68B8B124F52C120039FF9C /* ListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
 		DB68B8B324F55A100039FF9C /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		DB68B8B724F55BA90039FF9C /* mock_mailboxs.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = mock_mailboxs.json; sourceTree = "<group>"; };
@@ -32,6 +37,7 @@
 		DBA69A9A24F3E4BE00511735 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DBA69A9D24F3E4BE00511735 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DBA69A9F24F3E4BE00511735 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DBDE292324F847E000B97629 /* Mailbox+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Mailbox+CoreDataClass.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +51,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DB3237D924F7FF39001C69E6 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				DBDE292324F847E000B97629 /* Mailbox+CoreDataClass.swift */,
+				DB3237D524F7FF25001C69E6 /* Mail+CoreDataClass.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		DBA69A8524F3E4BD00511735 = {
 			isa = PBXGroup;
 			children = (
@@ -64,6 +79,7 @@
 		DBA69A9024F3E4BD00511735 /* mailbox */ = {
 			isa = PBXGroup;
 			children = (
+				DB3237D924F7FF39001C69E6 /* Models */,
 				DBA69A9124F3E4BD00511735 /* AppDelegate.swift */,
 				DBA69A9324F3E4BD00511735 /* SceneDelegate.swift */,
 				DBA69A9524F3E4BD00511735 /* ViewController.swift */,
@@ -73,6 +89,7 @@
 				DBA69A9C24F3E4BE00511735 /* LaunchScreen.storyboard */,
 				DBA69A9F24F3E4BE00511735 /* Info.plist */,
 				DB68B8B324F55A100039FF9C /* Store.swift */,
+				DB3237A724F7E496001C69E6 /* mailbox.xcdatamodeld */,
 				DB68B8B724F55BA90039FF9C /* mock_mailboxs.json */,
 				DB68B8B924F55BBB0039FF9C /* mock_mail.json */,
 			);
@@ -152,10 +169,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB3237A924F7E496001C69E6 /* mailbox.xcdatamodeld in Sources */,
 				DB68B8B424F55A100039FF9C /* Store.swift in Sources */,
+				DB3237D724F7FF25001C69E6 /* Mail+CoreDataClass.swift in Sources */,
 				DBA69A9624F3E4BD00511735 /* ViewController.swift in Sources */,
 				DBA69A9224F3E4BD00511735 /* AppDelegate.swift in Sources */,
 				DB68B8B224F52C120039FF9C /* ListViewController.swift in Sources */,
+				DBDE292524F847E000B97629 /* Mailbox+CoreDataClass.swift in Sources */,
 				DBA69A9424F3E4BD00511735 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -354,6 +374,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		DB3237A724F7E496001C69E6 /* mailbox.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				DB3237A824F7E496001C69E6 /* mailbox.xcdatamodel */,
+			);
+			currentVersion = DB3237A824F7E496001C69E6 /* mailbox.xcdatamodel */;
+			path = mailbox.xcdatamodeld;
+			sourceTree = SOURCE_ROOT;
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = DBA69A8624F3E4BD00511735 /* Project object */;
 }

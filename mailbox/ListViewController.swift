@@ -9,50 +9,6 @@
 import UIKit
 
 
-extension Date {
-
-    func formatRelativeString() -> String {
-        let dateFormatter = DateFormatter()
-        let calendar = Calendar(identifier: .gregorian)
-        dateFormatter.doesRelativeDateFormatting = true
-
-        if calendar.isDateInToday(self) {
-            dateFormatter.timeStyle = .short
-            dateFormatter.dateStyle = .none
-        } else if calendar.isDateInYesterday(self){
-            dateFormatter.timeStyle = .none
-            dateFormatter.dateStyle = .medium
-        } else if calendar.compare(Date(), to: self, toGranularity: .weekOfYear) == .orderedSame {
-            let weekday = calendar.dateComponents([.weekday], from: self).weekday ?? 0
-            return dateFormatter.weekdaySymbols[weekday-1]
-        } else {
-            dateFormatter.timeStyle = .none
-            dateFormatter.dateStyle = .short
-        }
-
-        return dateFormatter.string(from: self)
-    }
-}
-
-class ListViewControllerCellIndicator: UIView {
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        isOpaque = false
-        backgroundColor = .clear
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func draw(_ rect: CGRect) {
-        tintColor.setFill()
-        let indicator = UIBezierPath.init(arcCenter: CGPoint(x: self.frame.width / 2, y: self.frame.height / 2), radius: self.frame.width / 2, startAngle: 0, endAngle: 360, clockwise: true)
-        indicator.fill()
-    }
-}
-
 class ListViewControllerCell: UITableViewCell {
     
     var subjectLabel: UILabel = {
@@ -89,11 +45,12 @@ class ListViewControllerCell: UITableViewCell {
         return label
     }()
     
-    var indicator: ListViewControllerCellIndicator = {
-        let view = ListViewControllerCellIndicator()
+    var indicator: UIImageView = {
+        let view = UIImageView(image: UIImage(systemName: "circle.fill"))
+        view.contentMode = .scaleAspectFit
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
-    }()
+     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -114,9 +71,9 @@ class ListViewControllerCell: UITableViewCell {
             "date": dateLabel
         ]
 
-        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-8-[indicator(10)]-8-[subject]-[date]-|", options: [], metrics: nil, views: viewsDict))
-        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-8-[indicator(10)]-8-[content]-|", options: [], metrics: nil, views: viewsDict))
-        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-8-[indicator(10)]-8-[subTitle]-|", options: [], metrics: nil, views: viewsDict))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-6-[indicator(14)]-6-[subject]-[date]-|", options: [], metrics: nil, views: viewsDict))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-6-[indicator(14)]-6-[content]-|", options: [], metrics: nil, views: viewsDict))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-6-[indicator(14)]-6-[subTitle]-|", options: [], metrics: nil, views: viewsDict))
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[subject][subTitle][content]-|", options: [], metrics: nil, views: viewsDict))
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[date][subTitle][content]-|", options: [], metrics: nil, views: viewsDict))
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[indicator][subTitle][content]-|", options: [], metrics: nil, views: viewsDict))
@@ -128,7 +85,11 @@ class ListViewControllerCell: UITableViewCell {
 }
 
 class ListViewController: UIViewController {
-    var listItems: [Mail] = []
+    var mailbox: Mailbox?
+    
+    private var context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+
+    private var listItems: [Mail] = []
     
     private let reuseIdentifier = "ListViewControllerCell"
     
@@ -149,6 +110,18 @@ class ListViewController: UIViewController {
         
         view.setNeedsUpdateConstraints()
         view.addSubview(tableView)
+        
+        self.fetchMails()
+    }
+    
+    func fetchMails() {
+        do {
+            self.listItems = try context.fetch(Mail.fetchForMailbox(mailbox: self.mailbox!))
+            
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        } catch {}
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -183,13 +156,13 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! ListViewControllerCell
-        
-        if let data = listItems[indexPath.row] as Mail? {
-            cell.subjectLabel.text = data.headline
-            cell.subTitleLabel.text = data.subHeadline
-            cell.contentLabel.text = data.content
-            cell.dateLabel.text = data.date.formatRelativeString()
-            cell.indicator.tintColor = data.read ? .clear : .systemBlue
+                
+        if let mail = listItems[indexPath.row] as Mail? {
+            cell.subjectLabel.text = mail.headline
+            cell.subTitleLabel.text = mail.subHeadline
+            cell.contentLabel.text = mail.content
+            cell.dateLabel.text = mail.relativeDate()
+            cell.indicator.tintColor = mail.read ? .clear : .systemBlue
         }
         
         return cell
@@ -197,6 +170,34 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
+    }
+    
+    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        return UISwipeActionsConfiguration(actions: [
+            makeReadContextualAction(forRowAt: indexPath)
+        ])
+    }
+    
+    func makeReadContextualAction(forRowAt indexPath: IndexPath) -> UIContextualAction {
+        let mail = self.listItems[indexPath.row]
+        
+        let action = UIContextualAction(style: .normal, title: mail.read ? "Unread" : "Read", handler: { (_, _, completion) in
+            // Toggle read/unread
+            mail.read.toggle()
+            
+            // Get coresponding cell
+            let cell = self.tableView.cellForRow(at: indexPath) as! ListViewControllerCell
+            
+            // Update read/unread status indicator
+            cell.indicator.tintColor = mail.read ? .clear : .systemBlue
+            
+            // Finish completion
+            completion(true)
+        })
+        
+        action.backgroundColor = .systemBlue
+        action.image = UIImage(systemName: mail.read ? "envelope.badge.fill" : "envelope.open.fill")
+        return action
     }
 }
 
