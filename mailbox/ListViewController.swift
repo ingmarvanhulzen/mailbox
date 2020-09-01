@@ -45,17 +45,32 @@ class ListViewControllerCell: UITableViewCell {
         return label
     }()
     
-    var indicator: UIImageView = {
+    var readIndicator: UIImageView = {
         let view = UIImageView(image: UIImage(systemName: "circle.fill"))
         view.contentMode = .scaleAspectFit
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
      }()
     
+    var disclosureIndicator: UIImageView = {
+        let view = UIImageView(image: UIImage(systemName: "chevron.right"))
+        view.contentMode = .scaleAspectFit
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.tintColor = .secondaryLabel
+        return view
+    }()
+    
+    var flagIndicator: UIImageView = {
+        let view = UIImageView(image: UIImage(systemName: "flag.fill"))
+        view.contentMode = .scaleAspectFit
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        self.accessoryType = .disclosureIndicator
+        self.accessoryType = .none
         
         self.addSubviews()
         self.addSubviewConstraints()
@@ -66,31 +81,37 @@ class ListViewControllerCell: UITableViewCell {
     }
     
     private func addSubviews() {
-        contentView.addSubview(indicator)
+        contentView.addSubview(readIndicator)
         contentView.addSubview(subjectLabel)
         contentView.addSubview(subTitleLabel)
         contentView.addSubview(contentLabel)
         contentView.addSubview(dateLabel)
+        contentView.addSubview(disclosureIndicator)
+        contentView.addSubview(flagIndicator)
     }
     
     private func addSubviewConstraints() {
         let viewsDict = [
-            "indicator": indicator,
+            "read": readIndicator,
             "subject": subjectLabel,
             "subTitle": subTitleLabel,
             "content": contentLabel,
-            "date": dateLabel
+            "date": dateLabel,
+            "disclosure": disclosureIndicator,
+            "flag": flagIndicator,
         ]
         
         let constraints = [
-            "H:|-6-[indicator(14)]-6-[subject]-[date]-|",
-            "H:|-6-[indicator(14)]-6-[content]-|",
-            "H:|-6-[indicator(14)]-6-[subTitle]-|",
+            "H:|-6-[read(14)]-6-[subject]-[date]-[disclosure(10)]-6-|",
+            "H:|-26-[subTitle]-[flag(10)]-6-|",
+            "H:|-26-[content]-16-|",
+            "V:|-[read][subTitle][content]-|",
             "V:|-[subject][subTitle][content]-|",
             "V:|-[date][subTitle][content]-|",
-            "V:|-[indicator][subTitle][content]-|",
+            "V:|-[disclosure][subTitle][content]-|",
+            "V:|-[disclosure][flag][content]-|",
         ]
-        
+            
         constraints.forEach({
             contentView.addConstraints(
                 NSLayoutConstraint.constraints(withVisualFormat: $0, options: [], metrics: nil, views: viewsDict)
@@ -167,7 +188,8 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
             cell.subTitleLabel.text = mail.subHeadline
             cell.contentLabel.text = mail.content
             cell.dateLabel.text = mail.relativeDate()
-            cell.indicator.tintColor = mail.read ? .clear : .systemBlue
+            cell.readIndicator.tintColor = mail.read ? .clear : .systemBlue
+            cell.flagIndicator.tintColor = mail.flag ? .systemOrange : .clear
         }
         
         return cell
@@ -185,7 +207,8 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         return UISwipeActionsConfiguration(actions: [
-            deleteContextualAction(forRowAt: indexPath)
+            deleteContextualAction(forRowAt: indexPath),
+            toggleFlagContextualAction(forRowAt: indexPath)
         ])
     }
     
@@ -219,7 +242,7 @@ extension ListViewController {
             mail.read.toggle()
             
             let cell = self.tableView.cellForRow(at: indexPath) as! ListViewControllerCell
-            cell.indicator.tintColor = tintColor
+            cell.readIndicator.tintColor = tintColor
             
             completion(true)
         }
@@ -247,4 +270,28 @@ extension ListViewController {
         action.image = UIImage(systemName: "trash.fill")
         return action
     }
+    
+    // Method to create the toggle flag action for a specific row
+    // Return: specific row toggle flag action
+    private func toggleFlagContextualAction(forRowAt indexPath: IndexPath) -> UIContextualAction {
+        let mail = self.listItems[indexPath.row]
+        
+        let (title, tintColor, image) = mail.flag ?
+            ("Unflag", UIColor.clear, UIImage(systemName: "flag.slash.fill")) :
+            ("Flag", UIColor.systemOrange, UIImage(systemName: "flag.fill"))
+        
+        let action = UIContextualAction(style: .normal, title: title) { (_, _, completion) in
+            mail.flag.toggle()
+            
+            let cell = self.tableView.cellForRow(at: indexPath) as! ListViewControllerCell
+            cell.flagIndicator.tintColor = tintColor
+            
+            completion(true)
+        }
+        
+        action.backgroundColor = .systemOrange
+        action.image = image
+        return action
+    }
+
 }
