@@ -6,7 +6,8 @@
         "subHeadline": "Drive business with digital signatures", 
         "content": "Drive business with digital signatures Get in touch to discover what Adobe Sign could do for youre buisness.", 
         "date": "2020-08-25T17:04:43Z",
-        "read": false
+        "read": false,
+        "flag": false
     },
     {
         "id": "f3d5d12b-7728-4f43-9a71-4ad606f5596d",
@@ -15,7 +16,8 @@
         "subHeadline": "New in iOS 14: App tests and more", 
         "content": "Stories for Ivanhulzen. Property Wrappers in Swift. 10 Tips on Developing iOS 14 widgets and apps.",
         "date": "2020-08-25T15:04:43Z",
-        "read": false
+        "read": false,
+        "flag": false
     },
     {
         "id": "d629aaf7-d8cc-4fe9-97f7-a343950ced8d",
@@ -24,7 +26,8 @@
         "subHeadline": "You received an account verification email", 
         "content": "If you received an account verification email in error, it's likely that another user accidentally entered your email while trying to recover their own email account.",
         "date": "2020-08-24T11:04:43Z",
-        "read": true
+        "read": true,
+        "flag": true
     },
     {
         "id": "85208151-8d9b-44cf-a3cd-836ce5f83be3",
@@ -33,7 +36,8 @@
         "subHeadline": "Ut velit accusamus rem aliquid qui autem ducimus fugit.", 
         "content": "Ut velit accusamus rem aliquid qui autem ducimus fugit. Iure est illum adipisci tempore nobis ab rem. Quo recusandae doloribus voluptatum ut mollitia commodi. Praesentium expedita nemo.",
         "date": "2020-08-24T15:04:43Z",
-        "read": false
+        "read": false,
+        "flag": false
     },
     {
         "id": "2bda53be-079b-4ae6-a763-547d330511a1",
@@ -42,7 +46,8 @@
         "subHeadline": "Praesentium unde qui.", 
         "content": "Praesentium unde qui. Ut doloribus atque beatae quia hic et quas. Corrupti itaque quia possimus sit rerum voluptatibus dolores expedita.",
         "date": "2020-08-19T15:04:43Z",
-        "read": false
+        "read": false,
+        "flag": false
     },
     {
         "id": "6e951eb6-53cb-4cba-b23e-5e1c254924d2",
@@ -51,7 +56,8 @@
         "subHeadline": "Repellendus et labore commodi.", 
         "content": "Repellendus et labore commodi. Adipisci et minus dolores vitae maiores. Nobis saepe et. Omnis deleniti consequatur et quis ullam quibusdam eligendi sint. Sit deleniti commodi iusto ratione laudantium laboriosam.",
         "date": "2020-08-19T13:04:43Z",
-        "read": true
+        "read": true,
+        "flag": true
     },
     {
         "id": "c6801ecd-3000-405f-bf5e-af567cb3dfcd",
@@ -60,7 +66,8 @@
         "subHeadline": "Iusto velit exercitationem consequatur facere.", 
         "content": "Iusto velit exercitationem consequatur facere. Modi voluptatem quam voluptatem qui. Aliquam dignissimos nihil atque ut provident quis. Atque eum non sunt deleniti saepe et necessitatibus libero.",
         "date": "2020-08-19T12:04:43Z",
-        "read": true
+        "read": true,
+        "flag": false
     },
     {
         "id": "b8f65f73-8f19-40d7-bff8-88c6a59f477e",
@@ -69,7 +76,8 @@
         "subHeadline": "8 fitness tricks we're using from now on", 
         "content": "8 fitness tricks we're using from now on dignissimos nihil atque ut provident quis. Atque eum non sunt deleniti saepe et necessitatibus libero.",
         "date": "2020-08-19T12:04:43Z",
-        "read": true
+        "read": true,
+        "flag": false
     },
     {
         "id": "5dac293b-ca81-4cb7-8985-8cf968e1b1b0",
@@ -78,6 +86,7 @@
         "subHeadline": "The Overflow #35: Silicon Valley Exodus", 
         "content": "Introducing Articles for Teams, unit testing scientific models, and React v17.0 Release Candidate.",
         "date": "2020-08-19T12:04:43Z",
-        "read": false
+        "read": false,
+        "flag": false
     }
 ]

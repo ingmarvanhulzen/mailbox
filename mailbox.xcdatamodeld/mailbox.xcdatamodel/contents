@@ -3,6 +3,7 @@
     <entity name="Mail" representedClassName="Mail" syncable="YES" codeGenerationType="category">
         <attribute name="content" optional="YES" attributeType="String"/>
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="flag" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="headline" optional="YES" attributeType="String"/>
         <attribute name="read" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="removed" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
@@ -15,7 +16,7 @@
         <relationship name="mails" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Mail" inverseName="mailbox" inverseEntity="Mail"/>
     </entity>
     <elements>
-        <element name="Mail" positionX="-54" positionY="0" width="128" height="148"/>
+        <element name="Mail" positionX="-54" positionY="0" width="128" height="163"/>
         <element name="Mailbox" positionX="-307.35546875" positionY="-123.203125" width="128" height="88"/>
     </elements>
 </model>

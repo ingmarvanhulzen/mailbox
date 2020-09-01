@@ -55,6 +55,7 @@ func initializeStore(context: NSManagedObjectContext) {
                 mail.subHeadline = eachdataitem["subHeadline"] as? String
                 mail.content = eachdataitem["content"] as? String
                 mail.read = eachdataitem["read"] as! Bool
+                mail.flag = eachdataitem["flag"] as! Bool
                 mail.date = date?.addingTimeInterval(timeBetween)
                 mail.mailbox = mailboxes[mailboxId]
                 mail.removed = false
