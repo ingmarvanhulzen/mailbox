@@ -61,29 +61,6 @@ class ViewController: UIViewController {
         self.fetchMailboxes()
     }
     
-    func fetchMailboxes() {
-        do {
-            let request = Mailbox.fetchRequest() as NSFetchRequest
-            let sortDescriptors = NSSortDescriptor(key: "date", ascending: true)
-            
-            request.sortDescriptors = [sortDescriptors]
-            
-            self.mailboxes = try context.fetch(request)
-            
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
-        } catch {}
-    }
-    
-    func fetchUnreadCountForMailbox(mailbox: Mailbox) -> Int {
-        do {
-            return try self.context.fetch(Mail.fetchForMailboxUnread(mailbox: mailbox)).count
-        } catch {
-            return 0
-        }
-    }
-    
     override func updateViewConstraints() {
         NSLayoutConstraint.activate([
            tableView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor),
@@ -130,3 +107,33 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
+extension ViewController {
+    
+    // Method to fetch the mailboxes from CoreData
+    // Action: reloads tableView with fetched result
+    private func fetchMailboxes() {
+        
+        do {
+            let request = Mailbox.fetchRequest() as NSFetchRequest
+            let sortDescriptors = NSSortDescriptor(key: "date", ascending: true)
+            
+            request.sortDescriptors = [sortDescriptors]
+            
+            self.mailboxes = try context.fetch(request)
+            
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        } catch {}
+    }
+    
+    // Method to fetch the unread count for a specific mailbox from CoreData
+    // Return: specific mailbox unread count
+    private func fetchUnreadCountForMailbox(mailbox: Mailbox) -> Int {
+        do {
+            return try self.context.fetch(Mail.fetchForMailboxUnread(mailbox: mailbox)).count
+        } catch {
+            return 0
+        }
+    }
+}
