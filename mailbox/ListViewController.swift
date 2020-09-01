@@ -57,12 +57,23 @@ class ListViewControllerCell: UITableViewCell {
         
         self.accessoryType = .disclosureIndicator
         
+        self.addSubviews()
+        self.addSubviewConstraints()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func addSubviews() {
         contentView.addSubview(indicator)
         contentView.addSubview(subjectLabel)
         contentView.addSubview(subTitleLabel)
         contentView.addSubview(contentLabel)
         contentView.addSubview(dateLabel)
-
+    }
+    
+    private func addSubviewConstraints() {
         let viewsDict = [
             "indicator": indicator,
             "subject": subjectLabel,
@@ -70,17 +81,21 @@ class ListViewControllerCell: UITableViewCell {
             "content": contentLabel,
             "date": dateLabel
         ]
-
-        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-6-[indicator(14)]-6-[subject]-[date]-|", options: [], metrics: nil, views: viewsDict))
-        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-6-[indicator(14)]-6-[content]-|", options: [], metrics: nil, views: viewsDict))
-        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-6-[indicator(14)]-6-[subTitle]-|", options: [], metrics: nil, views: viewsDict))
-        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[subject][subTitle][content]-|", options: [], metrics: nil, views: viewsDict))
-        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[date][subTitle][content]-|", options: [], metrics: nil, views: viewsDict))
-        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[indicator][subTitle][content]-|", options: [], metrics: nil, views: viewsDict))
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        
+        let constraints = [
+            "H:|-6-[indicator(14)]-6-[subject]-[date]-|",
+            "H:|-6-[indicator(14)]-6-[content]-|",
+            "H:|-6-[indicator(14)]-6-[subTitle]-|",
+            "V:|-[subject][subTitle][content]-|",
+            "V:|-[date][subTitle][content]-|",
+            "V:|-[indicator][subTitle][content]-|",
+        ]
+        
+        constraints.forEach({
+            contentView.addConstraints(
+                NSLayoutConstraint.constraints(withVisualFormat: $0, options: [], metrics: nil, views: viewsDict)
+            )
+        })
     }
 }
 
@@ -112,16 +127,6 @@ class ListViewController: UIViewController {
         view.addSubview(tableView)
         
         self.fetchMails()
-    }
-    
-    func fetchMails() {
-        do {
-            self.listItems = try context.fetch(Mail.fetchForMailbox(mailbox: self.mailbox!))
-            
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
-        } catch {}
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -174,30 +179,47 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         return UISwipeActionsConfiguration(actions: [
-            makeReadContextualAction(forRowAt: indexPath)
+            toggleReadContextualAction(forRowAt: indexPath)
         ])
     }
     
-    func makeReadContextualAction(forRowAt indexPath: IndexPath) -> UIContextualAction {
+    
+}
+
+extension ListViewController {
+    
+    // Method to fetch the mails for a specific mailbox from CoreData
+    // Action: reloads tableView with fetched result
+    private func fetchMails() {
+        do {
+            self.listItems = try context.fetch(Mail.fetchForMailbox(mailbox: self.mailbox!))
+            
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        } catch {}
+    }
+
+    // Method to create the toggle read action for a specific row
+    // Return: specific row toggle read action
+    private func toggleReadContextualAction(forRowAt indexPath: IndexPath) -> UIContextualAction {
         let mail = self.listItems[indexPath.row]
         
-        let action = UIContextualAction(style: .normal, title: mail.read ? "Unread" : "Read", handler: { (_, _, completion) in
-            // Toggle read/unread
+        let (title, tintColor, image) = mail.read ?
+            ("Unread", UIColor.systemBlue, UIImage(systemName: "envelope.badge.fill")) :
+            ("Read", UIColor.clear, UIImage(systemName: "envelope.open.fill"))
+        
+        let action = UIContextualAction(style: .normal, title: title) { (_, _, completion) in
             mail.read.toggle()
             
-            // Get coresponding cell
             let cell = self.tableView.cellForRow(at: indexPath) as! ListViewControllerCell
+            cell.indicator.tintColor = tintColor
             
-            // Update read/unread status indicator
-            cell.indicator.tintColor = mail.read ? .clear : .systemBlue
-            
-            // Finish completion
             completion(true)
-        })
+        }
         
         action.backgroundColor = .systemBlue
-        action.image = UIImage(systemName: mail.read ? "envelope.badge.fill" : "envelope.open.fill")
+        action.image = image
         return action
     }
 }
-
