@@ -42,14 +42,17 @@ public class Mail: NSManagedObject {
     public class func fetchForMailbox(mailbox: Mailbox) -> NSFetchRequest<Mail> {
         let request = NSFetchRequest<Mail>(entityName: "Mail")
         let sortDescriptors = NSSortDescriptor(key: "date", ascending: false)
-                
+             
+        var predicate = NSPredicate(format: "removed == false")
+
         // Filter by mailbox if mailboxes issnt "All Inboxes"
         if mailbox.title != "All Inboxes" {
-            request.predicate = NSPredicate(format: "mailbox == %@", mailbox)
+            predicate = NSPredicate(format: "removed == false && mailbox == %@", mailbox)
         }
         
         request.sortDescriptors = [sortDescriptors]
-        
+        request.predicate = predicate
+
         return request
     }
     

@@ -57,6 +57,7 @@ func initializeStore(context: NSManagedObjectContext) {
                 mail.read = eachdataitem["read"] as! Bool
                 mail.date = date?.addingTimeInterval(timeBetween)
                 mail.mailbox = mailboxes[mailboxId]
+                mail.removed = false
             }
             
         } catch let error {

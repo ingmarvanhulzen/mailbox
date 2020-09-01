@@ -183,6 +183,12 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
         ])
     }
     
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        return UISwipeActionsConfiguration(actions: [
+            deleteContextualAction(forRowAt: indexPath)
+        ])
+    }
+    
     
 }
 
@@ -220,6 +226,25 @@ extension ListViewController {
         
         action.backgroundColor = .systemBlue
         action.image = image
+        return action
+    }
+    
+    // Method to create the delete action for a specific row
+    // Return: specific row delete action
+    private func deleteContextualAction(forRowAt indexPath: IndexPath) -> UIContextualAction {
+        let mail = self.listItems[indexPath.row]
+    
+        let action = UIContextualAction(style: .destructive, title: "Trash") { (_, _, completion) in
+            mail.removed = true
+            
+            self.listItems.remove(at: indexPath.row)
+            self.tableView.deleteRows(at: [indexPath], with: .top)
+           
+            completion(true)
+        }
+       
+        action.backgroundColor = .systemRed
+        action.image = UIImage(systemName: "trash.fill")
         return action
     }
 }
