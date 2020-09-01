@@ -59,11 +59,11 @@ public class Mail: NSManagedObject {
     public class func fetchForMailboxUnread(mailbox: Mailbox) -> NSFetchRequest<Mail> {
         let request = NSFetchRequest<Mail>(entityName: "Mail")
         
-        var predicate = NSPredicate(format: "read == false")
+        var predicate = NSPredicate(format: "read == false && removed == false")
 
         // Filter by mailbox if mailboxes issnt "All Inboxes"
         if mailbox.title != "All Inboxes" {
-            predicate = NSPredicate(format: "read == false && mailbox == %@", mailbox)
+            predicate = NSPredicate(format: "read == false && removed == false && mailbox == %@", mailbox)
         }
         
         request.predicate = predicate
