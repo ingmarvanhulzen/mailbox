@@ -50,6 +50,12 @@ class ViewController: UIViewController {
         
         view.addSubview(tableView)
         
+        navigationController?.isToolbarHidden = false
+        toolbarItems = [
+            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil),
+            UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(presentNew))
+        ]
+        
         initializeStore(context: self.context)
         
         self.fetchMailboxes()
@@ -135,5 +141,9 @@ extension ViewController {
         } catch {
             return 0
         }
+    }
+    
+    @objc func presentNew() {
+        performSegue(withIdentifier: "ShowNewViewController", sender: self)
     }
 }

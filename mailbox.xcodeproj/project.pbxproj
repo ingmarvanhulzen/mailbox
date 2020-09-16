@@ -19,6 +19,7 @@
 		DBA69A9924F3E4BD00511735 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DBA69A9724F3E4BD00511735 /* Main.storyboard */; };
 		DBA69A9B24F3E4BE00511735 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DBA69A9A24F3E4BE00511735 /* Assets.xcassets */; };
 		DBA69A9E24F3E4BE00511735 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DBA69A9C24F3E4BE00511735 /* LaunchScreen.storyboard */; };
+		DBCDEE77250035AF0008B38D /* NewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBCDEE76250035AF0008B38D /* NewViewController.swift */; };
 		DBDE292524F847E000B97629 /* Mailbox+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBDE292324F847E000B97629 /* Mailbox+CoreDataClass.swift */; };
 /* End PBXBuildFile section */
 
@@ -37,6 +38,7 @@
 		DBA69A9A24F3E4BE00511735 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DBA69A9D24F3E4BE00511735 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DBA69A9F24F3E4BE00511735 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DBCDEE76250035AF0008B38D /* NewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewViewController.swift; sourceTree = "<group>"; };
 		DBDE292324F847E000B97629 /* Mailbox+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Mailbox+CoreDataClass.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -84,6 +86,7 @@
 				DBA69A9324F3E4BD00511735 /* SceneDelegate.swift */,
 				DBA69A9524F3E4BD00511735 /* ViewController.swift */,
 				DB68B8B124F52C120039FF9C /* ListViewController.swift */,
+				DBCDEE76250035AF0008B38D /* NewViewController.swift */,
 				DBA69A9724F3E4BD00511735 /* Main.storyboard */,
 				DBA69A9A24F3E4BE00511735 /* Assets.xcassets */,
 				DBA69A9C24F3E4BE00511735 /* LaunchScreen.storyboard */,
@@ -175,6 +178,7 @@
 				DBA69A9624F3E4BD00511735 /* ViewController.swift in Sources */,
 				DBA69A9224F3E4BD00511735 /* AppDelegate.swift in Sources */,
 				DB68B8B224F52C120039FF9C /* ListViewController.swift in Sources */,
+				DBCDEE77250035AF0008B38D /* NewViewController.swift in Sources */,
 				DBDE292524F847E000B97629 /* Mailbox+CoreDataClass.swift in Sources */,
 				DBA69A9424F3E4BD00511735 /* SceneDelegate.swift in Sources */,
 			);
