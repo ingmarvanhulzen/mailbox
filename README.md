@@ -4,7 +4,7 @@ In this project I will try to recreate the iOS 13 mailbox app. I will only build
 
 ## Screenshots
 
-| ![Mailboxes](screenshots/mailboxes.png) | ![New mail](screenshots/new-mail.png) | ![Mailbox](screenshots/mailbox.png) |
+| ![Mailboxes](https://raw.githubusercontent.com/ivhdevelopment/mailbox/master/screenshots/mailboxes.png) | ![New mail](https://raw.githubusercontent.com/ivhdevelopment/mailbox/master/screenshots/new-mail.png) | ![Mailbox](https://raw.githubusercontent.com/ivhdevelopment/mailbox/master/screenshots/mailbox.png) |
 |:---:|:---:|:---:|
 | Mailboxes | New mail | Mailbox |
 
