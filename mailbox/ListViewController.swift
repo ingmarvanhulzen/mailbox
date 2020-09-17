@@ -136,7 +136,9 @@ class ListViewController: UIViewController {
         tableView.separatorInset.left = 26
         return tableView
     }()
-        
+
+    private var showUnread = false;
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -146,6 +148,14 @@ class ListViewController: UIViewController {
         
         view.setNeedsUpdateConstraints()
         view.addSubview(tableView)
+        
+        toolbarItems = [
+            UIBarButtonItem(image: UIImage(systemName: "line.horizontal.3.decrease.circle"), style: .plain, target: self, action: #selector(toggleShowUnread)),
+            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil),
+            UIBarButtonItem(customView: self.showUnreadTabBarView()),
+            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil),
+            UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(presentNew))
+        ]
         
         self.fetchMails()
     }
@@ -211,8 +221,6 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
             toggleFlagContextualAction(forRowAt: indexPath)
         ])
     }
-    
-    
 }
 
 extension ListViewController {
@@ -221,10 +229,11 @@ extension ListViewController {
     // Action: reloads tableView with fetched result
     private func fetchMails() {
         do {
-            self.listItems = try context.fetch(Mail.fetchForMailbox(mailbox: self.mailbox!))
+            self.listItems = try context.fetch(showUnread ? Mail.fetchForMailboxUnread(mailbox: self.mailbox!) : Mail.fetchForMailbox(mailbox: self.mailbox!))
             
             DispatchQueue.main.async {
                 self.tableView.reloadData()
+                self.updateTabBarItems()
             }
         } catch {}
     }
@@ -243,6 +252,7 @@ extension ListViewController {
             
             let cell = self.tableView.cellForRow(at: indexPath) as! ListViewControllerCell
             cell.readIndicator.tintColor = tintColor
+            self.updateTabBarItems()
             
             completion(true)
         }
@@ -262,7 +272,8 @@ extension ListViewController {
             
             self.listItems.remove(at: indexPath.row)
             self.tableView.deleteRows(at: [indexPath], with: .top)
-           
+            self.updateTabBarItems()
+            
             completion(true)
         }
        
@@ -293,5 +304,78 @@ extension ListViewController {
         action.image = image
         return action
     }
+    
+    // Method to fetch the unread count for a specific mailbox from CoreData
+    // Return: specific mailbox unread count
+    private func fetchUnreadCountForMailbox(mailbox: Mailbox) -> Int {
+        do {
+            return try self.context.fetch(Mail.fetchForMailboxUnread(mailbox: mailbox)).count
+        } catch {
+            return 0
+        }
+    }
+    
+    private func showUnreadTabBarView() -> UIView {
+        let view = UIView()
+        
+        let label = UILabel()
+        label.text = "Updated Just Now"
+        label.font = .preferredFont(forTextStyle: .caption1)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textAlignment = .center
+        
+        let label2 = UILabel()
+        label2.text = "Unread"
+        label2.font = .preferredFont(forTextStyle: .caption2)
+        label2.textColor = .systemBlue
+        label2.translatesAutoresizingMaskIntoConstraints = false
+        label2.textAlignment = .center
+        
+        let unreadCount = self.fetchUnreadCountForMailbox(mailbox: self.mailbox!)
+        var constraints = ["V:|-[label]-|", "H:|-[label]-|"]
+        var viewsDict = ["label": label]
+                
+        if showUnread || unreadCount > 0 {
+            constraints = ["V:|-[label]-4-[label2]-|", "H:|-[label]-|", "H:|-[label2]-|"]
+            viewsDict = ["label": label, "label2": label2]
+            
+            if showUnread {
+                label.text = "Filtered by:"
 
+            } else {
+                if unreadCount > 0 {
+                    label2.textColor = .secondaryLabel
+                    label2.text = "\(unreadCount) Unread"
+                }
+            }
+            
+            view.addSubview(label)
+            view.addSubview(label2)
+        } else {
+            view.addSubview(label)
+        }
+        
+        for withVisualFormat in constraints {
+            view.addConstraints(
+                NSLayoutConstraint.constraints(withVisualFormat: withVisualFormat, options: [], metrics: nil, views: viewsDict)
+            )
+        }
+        
+        return view
+    }
+    
+    private func updateTabBarItems() {
+        toolbarItems![0].image = UIImage(systemName: "line.horizontal.3.decrease.circle\(showUnread ? ".fill" : "")")
+        toolbarItems![2].customView = self.showUnreadTabBarView()
+    }
+    
+    @objc func toggleShowUnread(sender: UIBarButtonItem) {
+        showUnread.toggle()
+        
+        self.fetchMails()
+    }
+    
+    @objc func presentNew() {
+        performSegue(withIdentifier: "ShowNewViewController", sender: self)
+    }
 }
